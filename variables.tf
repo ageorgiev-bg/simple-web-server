@@ -73,6 +73,7 @@ variable "db_instance_type" {
   default     = null
 }
 
+# tflint-ignore: terraform_unused_declarations
 variable "db_admin_creds" {
   type        = string
   description = "Database admin credentials."
