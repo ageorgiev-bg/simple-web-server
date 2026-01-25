@@ -17,8 +17,8 @@ permissions:
   contents: read
 
 jobs:
-  environment: staging
   terraform:
+    environment: staging
     runs-on: ubuntu-latest
 
     steps:
