@@ -76,7 +76,7 @@ app = create_app()
 
 if __name__ == "__main__":
     # Development only
-    app.run(host="0.0.0.0", port=80, debug=True)
+    app.run(host="0.0.0.0", port=80) # , debug=True
 EOF
 
 
@@ -94,8 +94,8 @@ pymysql==1.1.0
 EOF
 
 cat <<EOF > /var/app/bootstrap.sql
-CREATE DATABASE flaskdb;
-CREATE USER 'flaskuser'@'%' IDENTIFIED BY 'password';
+CREATE DATABASE IF NOT EXISTS flaskdb;
+CREATE USER IF NOT EXISTS 'flaskuser'@'%' IDENTIFIED BY 'flaskPWD';
 GRANT ALL PRIVILEGES ON flaskdb.* TO 'flaskuser'@'%';
 FLUSH PRIVILEGES;
 EOF
@@ -115,7 +115,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 EOF
 
 
@@ -133,6 +132,7 @@ db_consistency_check() {
 
   USER_CHECK=$(mariadb -h $${DB_EP} -P 3306 -u admin -p $${ADMIN_PWD} -e "SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user = 'flaskuser')" --ssl-verify-server-cert  --ssl-ca=/root/eu-west-1-bundle.pem | grep "$DB_USER" > /dev/null; echo "$?")
   DB_CHECK=$(mariadb --batch --skip-column-names -h $${DB_EP} -P 3306 -u admin -p $${ADMIN_PWD} -e "SHOW DATABASES LIKE '"$DB_NAME"';" | grep "$DB_NAME" > /dev/null; echo "$?")
+  
   if [ $USER_CHECK -ne 0 ] || [ $DB_CHECK -ne 0 ]; then
     echo "DB user: $DB_USER/$DB_NAME don't exist, creating them.."
     mariadb -h $${DB_EP} -P 3306 -u admin -p $${ADMIN_PWD} --ssl-verify-server-cert  --ssl-ca=/root/eu-west-1-bundle.pem < /var/app/bootstrap.sql
@@ -144,7 +144,7 @@ db_consistency_check() {
 
 db_consistency_check
 
-# Initialize DB Tables
+# Initialize App DB Tables
 chmod +x init_db.py
 
 source venv/bin/activate
@@ -152,5 +152,5 @@ pip install -r requirements.txt
 python init_db.py
 
 
-# Launching the app
+# Launching the App
 nohup gunicorn --bind 0.0.0.0:80 wsgi:app &
