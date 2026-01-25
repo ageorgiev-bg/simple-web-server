@@ -1,3 +1,4 @@
 .self-signed_certs
 .terraform.plan
 tofu_state_file.json
+.terraform
