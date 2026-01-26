@@ -9,6 +9,14 @@ on:
           - staging
         default: "staging"
         description: "Environment to deploy"
+      target_job:
+        type: choice
+        description: 'Which job to run?'
+        options:
+          - terraform
+          - terraform-destroy
+        required: true
+        default: 'terraform'
   push:
     branches:
       - main
@@ -52,3 +60,34 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve tfplan
+
+  terraform-destroy:
+    environment: ${{ github.ref_name == 'main' && inputs.environment || 'staging' }}
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_OIDC }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.14.3
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: |
+          export TF_VAR_db_admin_creds=${{ secrets.TF_VAR_DB_ADMIN_CREDS }}
+          terraform plan  -out=tfplan
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'
+        run: terraform apply --var-file=environments/staging-vars.tf -destroy -auto-approve 
