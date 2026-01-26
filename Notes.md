@@ -120,8 +120,11 @@ For inter VPC connectivity check, you must add your security group as a source t
 ## 5. (Optional) Infrastructure Provisioning Runbook
 
 ### CI/CD Automated Deployment via GitHub Actions
-1. Pushing commits trigger Terraform deployment job
-2. To destroy an environment, use workflow manual trigger:
+>Note: 
+GitHub Actions workflow can request a short‑lived OpenID Connect (OIDC) token from GitHub, present it to AWS IAM, and get a temporary role. This allows GitHub Actions workflow to access resources in AWS without needing to store AWS credentials as long-lived GitHub secrets.
+  
+1. Pushing commits trigger GitHub Actions workflow with Terraform deployment job
+2. Use workflow manual trigger to destroy the deployment for a given environment:
   1. Go to Actions, select **"TF Infra Manage AWS infra (OIDC)"** worfklow
   2. Click **"Run Workflow"** and choose environment to Destroy
   3. Click **"Run Workflow"** button
