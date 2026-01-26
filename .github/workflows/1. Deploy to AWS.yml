@@ -28,8 +28,8 @@ permissions:
 
 jobs:
   terraform-deploy:
-    if: ${{ github.event.inputs.target_job == 'terraform-deploy' }}
     environment: ${{ (github.ref_name == 'main' && inputs.environment == 'staging') || 'development' }}
+    if: ${{ github.event.inputs.target_job == 'terraform-deploy' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -63,8 +63,8 @@ jobs:
         run: terraform apply -auto-approve tfplan
 
   terraform-destroy:
-    if: ${{ github.event.inputs.target_job == 'build' }}
     environment: ${{ (github.ref_name == 'main' && inputs.environment == 'staging') || 'development' }}
+    if: ${{ github.event.inputs.target_job == 'build' }}
     runs-on: ubuntu-latest
     steps:
 
