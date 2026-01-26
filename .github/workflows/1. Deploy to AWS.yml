@@ -43,9 +43,9 @@ jobs:
         run: terraform validate
 
       - name: Terraform Plan
-        env:
-          tf_var_db_admin_creds: ${{ secrets.TF_VAR_DB_ADMIN_CREDS }}
-        run: terraform plan --var-file=environments/staging-vars.tf -out=tfplan
+        run: |
+          export TF_VAR_db_admin_creds=${{ secrets.TF_VAR_DB_ADMIN_CREDS }}
+          terraform plan --var-file=environments/staging-vars.tf -out=tfplan
 
 
       - name: Terraform Apply
