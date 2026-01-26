@@ -125,6 +125,7 @@ For inter VPC connectivity check, you must add your security group as a source t
 3. Click **"Run Workflow"** button
 4. Verify the deployment finished successfully
 5. Hit the ALB DNS Name to check the application
+6. Destroy the environment - repeat step 1, on step 2. choose job to run: `terraform-destroy` and follow the rest of the steps
 
 
 ### Manual Deployment
