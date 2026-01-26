@@ -1,4 +1,4 @@
-name: Deploy to AWS (OIDC)
+name: TF Infra Manage AWS infra (OIDC)
 
 on:
   workflow_dispatch:
