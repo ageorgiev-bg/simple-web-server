@@ -119,17 +119,16 @@ For inter VPC connectivity check, you must add your security group as a source t
 
 ## 5. (Optional) Infrastructure Provisioning Runbook
 
-### CI/CD Automated Deployment via GitHub Actions 
-1. Go to Actions, select **"TF Infra Manage AWS infra (OIDC)"** worfklow
-2. Click **"Run Workflow"** and choose environment as well as job type
-3. Click **"Run Workflow"** button
-4. Verify the deployment finished successfully
-5. Hit the ALB DNS Name to check the application
-6. Destroy the environment - repeat step 1, on step 2. choose job to run: `terraform-destroy` and follow the rest of the steps
+### CI/CD Automated Deployment via GitHub Actions
+1. Pushing commits trigger Terraform deployment job
+2. To destroy an environment, use workflow manual trigger:
+  1. Go to Actions, select **"TF Infra Manage AWS infra (OIDC)"** worfklow
+  2. Click **"Run Workflow"** and choose environment to Destroy
+  3. Click **"Run Workflow"** button
 
 
 ### Manual Deployment
->Note: Terraform should be run at the root of the app repository. Environment variables must be passed to Terraform via: `--var-file=environments/staging-vars.tf`
+>Note: Terraform should be run at the root of Github app repository. Environment variables must be passed to Terraform via: `--var-file=environments/staging-vars.tf`
 
 1. Must pass RDS DB admin password as an OS environment variable using Terraform  
 `export TF_VAR_db_admin_creds=<DB-ADMIN-PASSWORD>`
@@ -140,6 +139,7 @@ For inter VPC connectivity check, you must add your security group as a source t
 rm.plan`
 4. Apply Terraform plan
 `terraform apply ".terraform.plan"`
-5. Verify the deployment finished successfully
-6. Destroy/Cleanup infra if/when needed
+5. Verify the deployment finished successfully in Github
+6. Hit the ALB DNS Name to check if the application is available
+7. (Optional): Destroy/Cleanup Terraform desployed infrastructure if/when needed
 `terraform apply --var-file=environments/staging-vars.tf -destroy`
