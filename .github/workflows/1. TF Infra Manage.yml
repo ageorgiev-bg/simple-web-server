@@ -22,6 +22,11 @@ on:
       - main
   # pull_request:
 
+env:
+  ENVIRONMENT: ${{ github.event.inputs.environment || 'staging' }}
+  TARGET_JOB: ${{ github.event.inputs.target_job || 'terraform-deploy' }}
+
+
 permissions:
   id-token: write
   contents: read
