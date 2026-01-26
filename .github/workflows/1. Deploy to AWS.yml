@@ -87,4 +87,6 @@ jobs:
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
-        run: terraform apply --var-file=environments/staging-vars.tf -destroy -auto-approve 
+        run: |
+          export TF_VAR_db_admin_creds=${{ secrets.TF_VAR_DB_ADMIN_CREDS }}
+          terraform apply --var-file=environments/staging-vars.tf -destroy -auto-approve 
