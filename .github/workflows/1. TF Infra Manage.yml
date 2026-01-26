@@ -21,6 +21,7 @@ permissions:
 
 jobs:
   terraform-deploy:
+    if: ${{ github.event_name == 'push' }}
     environment: ${{ github.event.inputs.environment || 'staging' }}
     runs-on: ubuntu-latest
 
