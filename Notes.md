@@ -141,5 +141,5 @@ rm.plan`
 `terraform apply ".terraform.plan"`
 5. Verify the deployment finished successfully in Github
 6. Hit the ALB DNS Name to check if the application is available
-7. (Optional): Destroy/Cleanup Terraform desployed infrastructure if/when needed
+7. (Optional) Destroy/Cleanup Terraform desployed infrastructure if/when needed
 `terraform apply --var-file=environments/staging-vars.tf -destroy`
