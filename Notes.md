@@ -40,9 +40,8 @@
                     │  └────────────────────┘  │
                     │                          │
                     └──────────────────────────┘
-
-
 ```
+
 ## 2. Git Repository Contents
 - `.github` - reserved for GitHub Actions workflo used to deploy the architecture  
 - `modules` - contains VPC module used to deploy networking part of the architecture  
