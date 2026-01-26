@@ -8,7 +8,7 @@ on:
         options:
           - staging
         default: staging
-        description: "Environment to deploy/destroy?"
+        description: "Environment to destroy?"
   push:
     branches:
       - main
