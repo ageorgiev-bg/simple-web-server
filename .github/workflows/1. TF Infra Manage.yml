@@ -17,9 +17,9 @@ on:
           - terraform-destroy
         required: true
         default: terraform-deploy
-  # push:
-  #   branches:
-  #     - main
+  push:
+    branches:
+      - main
   # pull_request:
 
 permissions:
