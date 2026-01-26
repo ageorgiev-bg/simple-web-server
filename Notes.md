@@ -87,7 +87,7 @@ There is a simple VPC module responsible for the VPC networking layer including:
 
 ## 4. Application Deploment Configuration Considerations
 >Note:
-The Flask application using DB as store, is deployed under `/var/app` inside Python virtual environment on the EC2 instance. There are several python files used to hold application configuration as well as SQLAlchemy configuration related to the Database storage.  
+Python Flask application using DB as store, is deployed under `/var/app` inside Python virtual environment on the EC2 instance. There are several python files used to hold application configuration as well as SQLAlchemy configuration related to the Database storage.  
 
 1. Host OS application-related environment variables (see `user_data_v2.sh` bootstrap configuration script):  
   - `ADMIN_PWD` - contain RDS DB admin user password, must be passed as OS environment variable, i.e `export TF_VAR_db_admin_creds` via CI/etc thru Terraform to the template 
