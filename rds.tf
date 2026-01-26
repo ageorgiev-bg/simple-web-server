@@ -1,3 +1,4 @@
+# RDS DB cluster must get get the admin password from a secure storage (Hashicorp's Vault, KeepassXC vault, AWS SSM Param Store, AWS Secrets Manager, etc)
 resource "aws_rds_cluster" "web_app_db" {
   cluster_identifier      = "${var.app_name}-${var.environment}"
   engine                  = "aurora-mysql"
@@ -13,7 +14,7 @@ resource "aws_rds_cluster" "web_app_db" {
   skip_final_snapshot = true
 
   db_subnet_group_name = module.vpc.db_subnet_group_id
-  # db_cluster_parameter_group_name
+  # db_cluster_parameter_group_name # real-world usage highly recommended
 
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
 
@@ -32,9 +33,9 @@ resource "aws_rds_cluster_instance" "web_app_db_instance" {
 
   instance_class = var.db_instance_type
 
-  #db_subnet_group_name = module.vpc.db_subnet_group_id # must match the same param defined on cluster level
+  #db_subnet_group_name = module.vpc.db_subnet_group_id # if defined here, it must match the same param defined on cluster level
 
-  #db_parameter_group_name = aws_db_parameter_group.db_parameters.name
+  #db_parameter_group_name = aws_db_parameter_group.db_parameters.name # real-world usage highly recommended
 
   tags = {
     Name        = "${var.app_name}-db"

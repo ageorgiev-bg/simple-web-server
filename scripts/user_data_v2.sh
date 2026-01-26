@@ -15,6 +15,35 @@ sudo yum install python3 -y
 python3 -m venv venv
 
 
+cat <<EOF > /var/app/app.py
+from flask import Flask, jsonify
+from config import Config
+from models import db, User
+
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object(Config)
+
+    db.init_app(app)
+
+    @app.route("/")
+    def health():
+        return jsonify(status="ok", service="flask-ec2-mysql-app")
+
+    @app.route("/users", methods=["GET"])
+    def list_users():
+        users = User.query.all()
+        return jsonify([u.to_dict() for u in users])
+
+    return app
+
+app = create_app()
+
+if __name__ == "__main__":
+    # Development only
+    app.run(host="0.0.0.0", port=80) # , debug=True
+EOF
+
 cat <<EOF > /var/app/config.py
 import os
 
@@ -48,37 +77,6 @@ class User(db.Model):
             "name": self.name
         }
 EOF
-
-
-cat <<EOF > /var/app/app.py
-from flask import Flask, jsonify
-from config import Config
-from models import db, User
-
-def create_app():
-    app = Flask(__name__)
-    app.config.from_object(Config)
-
-    db.init_app(app)
-
-    @app.route("/")
-    def health():
-        return jsonify(status="ok", service="flask-ec2-mysql-app")
-
-    @app.route("/users", methods=["GET"])
-    def list_users():
-        users = User.query.all()
-        return jsonify([u.to_dict() for u in users])
-
-    return app
-
-app = create_app()
-
-if __name__ == "__main__":
-    # Development only
-    app.run(host="0.0.0.0", port=80) # , debug=True
-EOF
-
 
 cat <<EOF > /var/app/wsgi.py
 from app import create_app

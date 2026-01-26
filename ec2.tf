@@ -1,4 +1,4 @@
-### Compute Resources: (AMI, EC2, ASG, ASG Launch Template)
+### Compute Resources: (AMI, EC2, ASG, Launch Template)
 data "aws_ami" "ec2_ami" {
   most_recent = true
   owners      = ["amazon"]
@@ -55,7 +55,7 @@ resource "aws_autoscaling_group" "app_asg" {
   max_size                  = 1
   min_size                  = 1
   health_check_grace_period = 300
-  health_check_type         = "EC2" # TODO: MUST change after the testing is over!!!
+  health_check_type         = "ELB" # ELB Target Group health checks + ASG health checks
   desired_capacity          = 1
   force_delete              = true
 
