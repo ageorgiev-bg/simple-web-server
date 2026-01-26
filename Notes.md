@@ -44,15 +44,15 @@
 
 ```
 ## 2. Git Repository Contents
-- .github - reserved for GitHub Actions workflo used to deploy the architecture  
-- modules - contains VPC module used to deploy networking part of the architecture  
-- scripts - contain EC2 instance bootstrap configuration passed thru "EC2 user data"  
-- environments - holds 1+ environment specific infrastructure configurations  
+- `.github` - reserved for GitHub Actions workflo used to deploy the architecture  
+- `modules` - contains VPC module used to deploy networking part of the architecture  
+- `scripts` - contain EC2 instance bootstrap configuration passed thru "EC2 user data"  
+- `environments` - holds 1+ environment specific infrastructure configurations  
 
 ## 3. Github CI-CD Actions (workflow)  
 Must create a single Github environment secrets containing 3 variables:  
-- Environment: `staging`  
-- Secrets:  
+- **Environment**: `staging`  
+- **Secrets**:  
   - `AWS_REGION` - environment region  
   - `AWS_ROLE_OIDC` - Terraform deployment (AWS) role  
   - `TF_VAR_DB_ADMIN_CREDS` - AWS RDS DB cluster password  
@@ -75,12 +75,12 @@ There is a simple VPC module responsible for the VPC networking layer including:
 0. S3 bucket for Terraform state!! (must create it separately)  
   - Must have valid SSL/TLS cerificate available to use (must create it separately)  
 1. **EC2 Autoscaling Group** to support HA and DR scenarios 
-  - using Launch Template  
+  - Uses Launch Template  
     - Flask application is deployed via EC2 user data templated script inside `scripts/user_data_v2.sh`  
   - ASG is deployed across several AZs  
 2. **Elastic Load Balancer** - Application Load Balancer with 2 listeners (HTTP/S)   
-  - http listener (TCP: 80)  
-  - https listener - (self-signed certificate is excluded) (TCP: 443)  
+  - HTTP listener (TCP: 80)  
+  - HTTPS listener - (self-signed certificate is excluded) (TCP: 443)  
   - Single ALB target group for EC2 instance(s) (via ASG)  
   - Private access S3 bucket for ALB access logs  
 3. **RDS Aurora DB cluster** running MySQL 8.0 - single DB instance, no Multi-AZ  
