@@ -8,7 +8,7 @@ on:
         options:
           - staging
         default: staging
-        description: "Environment to deploy"
+        description: "Environment to deploy/destroy?"
       target_job:
         type: choice
         description: 'Which job to run?'
