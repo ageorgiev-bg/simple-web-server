@@ -7,7 +7,7 @@ on:
         type: choice
         options:
           - staging
-        default: "staging"
+        default: staging
         description: "Environment to deploy"
       target_job:
         type: choice
@@ -16,7 +16,7 @@ on:
           - terraform-deploy
           - terraform-destroy
         required: true
-        default: 'terraform-deploy'
+        default: terraform-deploy
   push:
     branches:
       - main
