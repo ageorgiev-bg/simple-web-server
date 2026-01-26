@@ -8,7 +8,7 @@ export ADMIN_PWD=${admin_creds}
 
 # Prepare app dir
 mkdir -p /var/app
-cd !$
+cd /var/app
 
 # Install python 3 & create venv
 sudo yum install python3 -y
