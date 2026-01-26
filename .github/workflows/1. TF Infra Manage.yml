@@ -9,22 +9,10 @@ on:
           - staging
         default: staging
         description: "Environment to deploy/destroy?"
-      target_job:
-        type: choice
-        description: 'Which job to run?'
-        options:
-          - terraform-deploy
-          - terraform-destroy
-        required: true
-        default: terraform-deploy
   push:
     branches:
       - main
   # pull_request:
-
-env:
-  ENVIRONMENT: ${{ github.event.inputs.environment || 'staging' }}
-  TARGET_JOB: ${{ github.event.inputs.target_job || 'terraform-deploy' }}
 
 
 permissions:
@@ -33,8 +21,7 @@ permissions:
 
 jobs:
   terraform-deploy:
-    environment: ${{ inputs.environment}}
-    if: ${{ github.event.inputs.target_job == 'terraform-deploy' }}
+    environment: ${{ github.event.inputs.environment || 'staging' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -68,8 +55,8 @@ jobs:
         run: terraform apply -auto-approve tfplan
 
   terraform-destroy:
-    environment: ${{ inputs.environment}}
-    if: ${{ github.event.inputs.target_job == 'terraform-destroy' }}
+    environment: ${{ github.event.inputs.environment || 'staging' }}
+    if: ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     steps:
 
