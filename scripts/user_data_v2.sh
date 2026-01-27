@@ -51,30 +51,44 @@ class Config:
     MYSQL_USER = os.getenv("MYSQL_USER", "flaskuser")
     MYSQL_PASSWORD = os.getenv("FLASK_USR_PWD", "flaskPWD")
     MYSQL_HOST = os.getenv("DB_EP", "localhost")
+    MYSQL_PORT = os.getenv("MYSQL_PORT", "3306")
     MYSQL_DB = os.getenv("MYSQL_DB", "flaskdb")
 
     SQLALCHEMY_DATABASE_URI = (
         f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}"
-        f"@{MYSQL_HOST}/{MYSQL_DB}"
+        f"@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DB}"
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 EOF
 
 cat <<EOF > /var/app/models.py
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+from sqlalchemy.dialects.mysql import INTEGER
 
 db = SQLAlchemy()
+
 
 class User(db.Model):
     __tablename__ = "users"
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    # Use MySQL INTEGER type with unsigned=True
+    user_id = db.Column(INTEGER(unsigned=True), primary_key=True, autoincrement=True)
+    username = db.Column(db.String(50), nullable=False, unique=True)
+    email = db.Column(db.String(100), nullable=False, unique=True)
+    password_hash = db.Column(db.String(64), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = db.Column(
+        db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
+    )
 
     def to_dict(self):
         return {
-            "id": self.id,
-            "name": self.name
+            "user_id": self.user_id,
+            "username": self.username,
+            "email": self.email,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }
 EOF
 
@@ -93,8 +107,22 @@ EOF
 
 cat <<EOF > /var/app/bootstrap.sql
 CREATE DATABASE IF NOT EXISTS flaskdb;
-CREATE USER IF NOT EXISTS 'flaskuser'@'%' IDENTIFIED BY 'flaskPWD';
-GRANT ALL PRIVILEGES ON flaskdb.* TO 'flaskuser'@'%';
+
+USE flaskdb;
+
+CREATE TABLE users (
+    user_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password_hash CHAR(64) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE USER IF NOT EXISTS 'flaskuser' @'%' IDENTIFIED BY 'flaskPWD';
+
+GRANT ALL PRIVILEGES ON flaskdb.* TO 'flaskuser' @'%';
+
 FLUSH PRIVILEGES;
 EOF
 
