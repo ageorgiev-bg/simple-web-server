@@ -44,6 +44,7 @@ if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80) # , debug=True
 EOF
 
+
 cat <<EOF > /var/app/config.py
 import os
 
@@ -60,6 +61,7 @@ class Config:
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 EOF
+
 
 cat <<EOF > /var/app/models.py
 from flask_sqlalchemy import SQLAlchemy
@@ -92,11 +94,13 @@ class User(db.Model):
         }
 EOF
 
+
 cat <<EOF > /var/app/wsgi.py
 from app import create_app
 
 app = create_app()
 EOF
+
 
 cat <<EOF > /var/app/requirements.txt
 flask==3.0.0
@@ -104,6 +108,7 @@ gunicorn==21.2.0
 flask-sqlalchemy==3.1.1
 pymysql==1.1.0
 EOF
+
 
 cat <<EOF > /var/app/bootstrap.sql
 CREATE DATABASE IF NOT EXISTS flaskdb;
