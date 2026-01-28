@@ -8,7 +8,15 @@ on:
         options:
           - staging
         default: staging
-        description: "Environment to destroy?"
+        description: "Environment name"
+      action:
+        type: choice
+        options:
+          - apply
+          - destroy
+        default: apply
+        description: "TF Action to take"
+
   push:
     branches:
       - main
@@ -21,7 +29,7 @@ permissions:
 
 jobs:
   terraform-deploy:
-    if: ${{ github.event_name == 'push' }}
+    if: ${{ github.event_name == 'push' || github.event.inputs.action == 'apply' }}
     environment: ${{ github.event.inputs.environment || 'staging' }}
     runs-on: ubuntu-latest
 
@@ -57,7 +65,7 @@ jobs:
 
   terraform-destroy:
     environment: ${{ github.event.inputs.environment || 'staging' }}
-    if: ${{ github.event_name == 'workflow_dispatch' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'destroy' }}
     runs-on: ubuntu-latest
     steps:
 
