@@ -175,7 +175,7 @@ db_consistency_check() {
   local DB_NAME="flaskdb"
   local DB_USER="flaskuser"
 
-  USER_CHECK=$(mariadb -h $${DB_EP} -P 3306 -u admin -p $${ADMIN_PWD} -e "SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user = 'flaskuser')" --ssl-verify-server-cert  --ssl-ca=/root/eu-west-1-bundle.pem | grep "$DB_USER" > /dev/null; echo "$?")
+  USER_CHECK=$(mariadb -h $${DB_EP} -P 3306 -u admin -p $${ADMIN_PWD} -e "SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user = $${DB_USER})" --ssl-verify-server-cert  --ssl-ca=/root/eu-west-1-bundle.pem | grep "$DB_USER" > /dev/null; echo "$?")
   DB_CHECK=$(mariadb --batch --skip-column-names -h $${DB_EP} -P 3306 -u admin -p $${ADMIN_PWD} -e "SHOW DATABASES LIKE '"$DB_NAME"';" | grep "$DB_NAME" > /dev/null; echo "$?")
   
   if [ $USER_CHECK -ne 0 ] || [ $DB_CHECK -ne 0 ]; then
