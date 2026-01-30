@@ -120,6 +120,7 @@ flask==3.0.0
 gunicorn==21.2.0
 flask-sqlalchemy==3.1.1
 pymysql==1.1.0
+cryptography==46.0.4
 EOF
 
 
