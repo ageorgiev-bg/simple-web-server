@@ -10,10 +10,23 @@ export ADMIN_PWD=${admin_creds}
 mkdir -p /var/app
 cd /var/app
 
-# Install python 3 & create venv
-sudo yum install python3 -y
-python3 -m venv venv
+# Add MariaDB repo
 
+cat << EOF | sudo tee /etc/yum.repos.d/MariaDB.repo
+# MariaDB 11.4 RedHatEnterpriseLinux repository list - created 2024-08-13 06:05 UTC
+# https://mariadb.org/download/
+[mariadb]
+name = MariaDB
+# rpm.mariadb.org is a dynamic mirror if your preferred mirror goes offline. See https://mariadb.org/mirrorbits/ for details.
+# baseurl = https://rpm.mariadb.org/11.4/rhel/$releasever/$basearch
+baseurl = https://mirrors.gigenet.com/mariadb/yum/11.4/rhel/9/aarch64
+# gpgkey = https://rpm.mariadb.org/RPM-GPG-KEY-MariaDB
+gpgkey = https://mirrors.gigenet.com/mariadb/yum/RPM-GPG-KEY-MariaDB
+gpgcheck = 1
+EOF
+
+# Install python 3, mariadb & create venv
+sudo dnf install -y python3 MariaDB-server MariaDB-client MariaDB-devel 
 
 cat <<EOF > /var/app/app.py
 from flask import Flask, jsonify
@@ -178,6 +191,7 @@ db_consistency_check
 # Initialize App DB Tables
 chmod +x init_db.py
 
+python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 python init_db.py
