@@ -8,7 +8,7 @@ export ADMIN_PWD=${admin_creds}
 
 # Prepare app dir
 mkdir -p /var/app
-cd /var/app
+
 
 # Add MariaDB repo
 
@@ -164,7 +164,7 @@ EOF
 
 
 # Get RDS cluster CA bundle for region eu-west-1
-wget https://truststore.pki.rds.amazonaws.com/eu-west-1/eu-west-1-bundle.pem
+wget https://truststore.pki.rds.amazonaws.com/eu-west-1/eu-west-1-bundle.pem -O /root/eu-west-1-bundle.pem
 
 
 db_consistency_check() {
@@ -180,7 +180,7 @@ db_consistency_check() {
   
   if [ $USER_CHECK -ne 0 ] || [ $DB_CHECK -ne 0 ]; then
     echo "DB user: $DB_USER/$DB_NAME don't exist, creating them.."
-    mariadb -h $${DB_EP} -P 3306 -u admin -p $${ADMIN_PWD} --ssl-verify-server-cert  --ssl-ca=/root/eu-west-1-bundle.pem < /var/app/bootstrap.sql
+    mariadb -h $${DB_EP} -P 3306 -u admin -p $${ADMIN_PWD} --ssl-verify-server-cert  --ssl-ca=/root/eu-west-1-bundle.pem < /var/app/bootstrap.sql || echo "DB user/db Creation Failed!!!!"
   else
     echo "DB User/DB exist. Exiting.."
   fi
@@ -190,8 +190,9 @@ db_consistency_check() {
 db_consistency_check
 
 # Initialize App DB Tables
-chmod +x init_db.py
+chmod +x /var/app/init_db.py
 
+cd /var/app
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
