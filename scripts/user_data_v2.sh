@@ -11,7 +11,6 @@ mkdir -p /var/app
 
 
 # Add MariaDB repo
-
 cat << EOF | sudo tee /etc/yum.repos.d/MariaDB.repo
 # MariaDB 11.4 RedHatEnterpriseLinux repository list - created 2024-08-13 06:05 UTC
 # https://mariadb.org/download/
