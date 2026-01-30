@@ -180,7 +180,7 @@ db_consistency_check() {
   
   if [ $USER_CHECK -ne 0 ] || [ $DB_CHECK -ne 0 ]; then
     echo "DB user: $DB_USER/$DB_NAME don't exist, creating them.."
-    mariadb -h $${DB_EP} -P 3306 -u admin -p $${ADMIN_PWD} --ssl-verify-server-cert  --ssl-ca=/root/eu-west-1-bundle.pem < /var/app/bootstrap.sql || echo "DB user/db Creation Failed!!!!"
+    mariadb -h ${DB_EP} -P 3306 -u admin -p"${ADMIN_PWD}" --ssl-verify-server-cert  --ssl-ca=/root/eu-west-1-bundle.pem < /var/app/bootstrap.sql || echo "DB user/db Creation Failed!!!!"
   else
     echo "DB User/DB exist. Exiting.."
   fi
