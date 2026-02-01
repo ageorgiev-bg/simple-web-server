@@ -17,9 +17,9 @@ on:
         default: apply
         description: "TF Action to take"
 
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
   # pull_request:
 
 
